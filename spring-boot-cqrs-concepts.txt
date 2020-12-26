@@ -27,3 +27,7 @@ We know that best coding practise is speration of concerns in design
 	writing code to store events in event source etc
 	
 - Axon provides OOB embeded Data bse like H2 for storing event sources, however we cna configure this to use mongo D.B , mysql etc	
+
+- We could do the changes in Query service withput using AXON, however there are benefits of using AXON on the query side
+	a. Easy interceptors can be used
+	b. message/event monitoring, as to how many request are comming , can be viewed in axon server ui

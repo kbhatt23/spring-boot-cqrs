@@ -8,6 +8,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ public class UserController {
 	private CommandGateway commandGateway;
 	
 	@PostMapping
+	@PreAuthorize("#oauth2.hasScope('write')")
 	public ResponseEntity<UserCreationResponse> createUser(@RequestBody @Valid UserCreationCommand userCreationCommand){
 		String uniqueID = UUID.randomUUID().toString();
 		try {
@@ -45,6 +47,7 @@ public class UserController {
 	
 	
 	@PutMapping("/{userId}")
+	@PreAuthorize("#oauth2.hasScope('write')")
 	public ResponseEntity<BaseResponse> updateUser(@RequestBody @Valid UserUpdationCommand userUpdationCommand, @PathVariable String userId){
 		try {
 		//update the command id, in commandhandler we will take this and copy to the user id
@@ -57,6 +60,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/{userId}")
+	@PreAuthorize("#oauth2.hasScope('write')")
 	public ResponseEntity<BaseResponse> deleteUser(@PathVariable String userId){
 		UserDeletionCommand userDeletionCommand = new UserDeletionCommand();
 		try {

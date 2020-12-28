@@ -1,0 +1,23 @@
+server:
+  port: 2000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: commandUsers
+          uri: http://localhost:7000/command/api/v1/users/**
+          predicates:
+            - Path=/command/api/v1/users/**
+        - id: queryUsers
+          uri: http://localhost:7001/query/api/v1/users/**
+          predicates:
+            - Path=/query/api/v1/users/**
+        - id: queryBank
+          uri: http://localhost:9001/query/api/v1/bank/**
+          predicates:
+            - Path=/query/api/v1/bank/**
+        - id: commandBank
+          uri: http://localhost:9000/command/api/v1/bank/**
+          predicates:
+            - Path=/command/api/v1/bank/**

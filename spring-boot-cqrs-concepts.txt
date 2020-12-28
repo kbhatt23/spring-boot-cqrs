@@ -31,3 +31,6 @@ We know that best coding practise is speration of concerns in design
 - We could do the changes in Query service withput using AXON, however there are benefits of using AXON on the query side
 	a. Easy interceptors can be used
 	b. message/event monitoring, as to how many request are comming , can be viewed in axon server ui
+	
+- Spring cloud gateway provided no blocking asynchrnous way of rever proxy whihc is not present in zuul
+		It using reactive web handlers for this

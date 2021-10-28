@@ -1,5 +1,6 @@
 package com.learning.cqrs.eventhandlers;
 
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@ProcessingGroup("user-service-group")
 public class UserEventHandler {
 
 	@Autowired

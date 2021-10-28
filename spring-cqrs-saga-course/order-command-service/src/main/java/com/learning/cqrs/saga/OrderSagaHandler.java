@@ -16,6 +16,7 @@ import com.learning.cqrs.commands.UndoReserveProductCommand;
 import com.learning.cqrs.commands.UserBalanceCreditCommand;
 import com.learning.cqrs.commands.UserBalanceDebitCommand;
 import com.learning.cqrs.events.CreateOrderEvent;
+import com.learning.cqrs.events.FailureOrderEvent;
 import com.learning.cqrs.events.ReserveProductEvent;
 import com.learning.cqrs.events.SuccessOrderEvent;
 import com.learning.cqrs.events.UndoReserveProductEvent;
@@ -160,11 +161,15 @@ public class OrderSagaHandler {
 	@SagaEventHandler(associationProperty = "orderId")
 	@EndSaga
 	public void handle(SuccessOrderEvent successOrderEvent) {
-		log.info("handle.successOrderEvent called with data: "+successOrderEvent);
+		log.info("handle.successOrderEvent succesfully placed order: "+successOrderEvent);
 		
 	}
 	
-	
-	
+	@SagaEventHandler(associationProperty = "orderId")
+	@EndSaga
+	public void handle(FailureOrderEvent failureOrderEvent) {
+		log.info("handle.failureOrderEvent error occurred while placing order: "+failureOrderEvent);
+		
+	}
 	
 }

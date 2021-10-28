@@ -1,18 +1,26 @@
+command to see the mongo db data:
+db.getCollection('domainevents').find({})
+
 Why we need Command Query System : Basically segrate read api and write api
 a. we can autoscale based on read/write demands , eg some appliction have huge write request but very less read request hence we can scale them speerately
 b. adding multiple point of failure so that thereis high resilience:
 	lets say if read serivce is down we can still keep on writeing as long as seperate write service is up
+c. we can keep implementation technique seperate for read and writes, eg we can keep acid compilat db for writes and have seperate table for consistent data
+	and for read we an havce single table and hence to make it fast we need not have join etc
 flow:
 	write service pusblish to inner event queue, using comandhandler
 	> the internal queu edata will be stored in event store eg: mysql d.B, mongo etc -> this way we cna even replay the data in case of errros
 	then this also publish to event bus whihc will be read by event handler in reqad api whihc create/modify the real record whihc wil be pulled by the client
 	- > any issue in read data can still be replayed from event store,
+	-> remember that on command side first event is stored in event store like mongo/h2/mysql then only it is published to event bus like kafka/rabbit
+	   in case event store is down error will be pushed to the client
+
 c. we cna keep seprate struture of data in reqad api or write api, this way we can maintain the data as well as keep query fast
 	-> its a wll knonw fact that if we keep all data in single table(falttening/indexing) cna make it very fast in read, we cna do the same in query api,
 		however such data is not good in maintainability and hence in command api we can keep them with structure multiple tables with relationships
 		
 CQRS: command query segregation principle
-Event Sourcing: saving the each modification state, like create , update everytime in D.B etc		
+Event Sourcing: saving the each modification state, like create , update , delete everytime in D.B etc		
 	any modification to state of object is also stored along wioth the live/current value
 	- live value can be stored in Query api and event sourcing /all mdofication in state can be stored in commadn side, both integrated using event bus
 	- each eent in event source is immutable meaning any new change request for the entity will be a new row seperately in event store
@@ -31,6 +39,14 @@ We know that best coding practise is speration of concerns in design
 - We could do the changes in Query service withput using AXON, however there are benefits of using AXON on the query side
 	a. Easy interceptors can be used
 	b. message/event monitoring, as to how many request are comming , can be viewed in axon server ui
+
+- Terms in axon framework:
+a. domain : a bounded context for each microservice
+b. aggreage: most imprtatn part of DDD
+	an aggreagate is entity or group of entities whose state will be modified in the microservice domain and we need to esnure consitent data(ACID) for this object.
+c. aggregate root: root object acting as aggreaget for domain
+d. event: any state change in aggreaget is called event
+e. command: any action with specific intenetn like registerusercommand , deleteusercomamdn etc
 	
 - Spring cloud gateway provided no blocking asynchrnous way of rever proxy whihc is not present in zuul
 		It using reactive web handlers for this

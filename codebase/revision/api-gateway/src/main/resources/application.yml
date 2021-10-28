@@ -1,0 +1,15 @@
+server:
+  port: 2000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: commandUsers
+          uri: http://localhost:7000/command/users/**
+          predicates:
+            - Path=/command/users/**
+        - id: queryUsers
+          uri: http://localhost:7001/query/users/**
+          predicates:
+            - Path=/query/users/**

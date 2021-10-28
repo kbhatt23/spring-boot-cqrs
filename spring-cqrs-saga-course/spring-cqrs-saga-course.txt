@@ -1,0 +1,40 @@
+Event driven microservices
+a. generally microservices commuicate using http request/response model
+ however in case one microservice need to all n microservices and in future more service may come
+	we need to do something to reduce this on to many relation ship and n netwrok calls from cleint using req/res model whihc is blocking and slow
+b. we can decouple this communication using event driven architechture using kafka/rabbit mq like event broker	
+
+saga
+a . choreography based : uses mesasge broker and all microservie communicate via events -> event driven microservices
+	in this individual service have code for publishing succes event as well as rollback event consumption code
+b. orchestration based : also uses message broker
+  however in this a seperate microservice exist whihc have undoing code for each fo the failure events
+	in orchestration do ,redo and undo code is present in individual microservice but here the undo code and redo code is present on seperate microservice
+	in short the orchestration service have steps of do/redo/undo at one place and can be helpful for new dev to understand the actual flow
+	
+	event sourcing: instead of stroing only latest state we keep track of all the state modification event is some D.B like h2 or mysql or mongo
+	at any point of failure we can run through these event store to find the latest state
+	it also helps in debugging as we can replay the history of events upto specfic time and see within whihc range of events defect arised
+		and hence we can debug only those specific event/events and business code
+
+
+so using kafka with code logic for workflow in individual service is example of choreography
+but axon helps in orchestration as logic/workflow of do redo movement is present in one of the micro service/seprate service
+	it can be kept in the microservice itself whihc starts the flow
+		
+axon server configuration documentation:
+https://docs.axoniq.io/reference-guide/axon-server/administration/admin-configuration/configuration#configuration-properties		
+
+overall flow in command apis:
+
+message interceptor aka command interceptor is good place for command validation as it saves wrong command to be pusehd to command bus
+http request -> hibernate validation -> command controller -> commandgateway dispatch -> message interceptor(another place for validation of command) command bus -> 
+			-> command handler (validation of command and creation of events) -> event bus (push to event source(d.b like h2/mongo) and then to kafka for query api)
+			-> event sourcing handler (update the aggregate state) -> event handler from query api picks event from event bus and update D.B
+			
+
+overall flow in query apis:
+http request -> query contrller -> querygateway dispatch -> query bus(internal) -> queryhandler calls db and create object
+    -> copletablefuture object is taken from query bus result
+	
+we can see at each level even within command and query api it is decoupled and even internal calls are async using internal bus	

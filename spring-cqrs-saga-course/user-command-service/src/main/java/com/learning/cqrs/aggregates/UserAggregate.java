@@ -36,6 +36,7 @@ public class UserAggregate {
 	public UserAggregate(CreateUserCommand createUserCommand) {
 		log.info("createUserCommand called with data: "+createUserCommand);
 		
+		//could be checking if the user id exist, can be using redis set for O(1) time complexity for validation in command api itself
 		if(StringUtils.isEmpty(createUserCommand.getUserId())) {
 			throw new IllegalArgumentException("createUserCommand: userId can not be empty while creating user");
 		}
@@ -67,6 +68,7 @@ public class UserAggregate {
 			throw new IllegalArgumentException("userBalanceDebitCommand: userId can not be empty while creating user");
 		}
 		
+		//validate in saga rollback
 		if(balance < userBalanceDebitCommand.getBalance()) {
 			throw new IllegalArgumentException("userBalanceDebitCommand: not enough available balance");
 		}

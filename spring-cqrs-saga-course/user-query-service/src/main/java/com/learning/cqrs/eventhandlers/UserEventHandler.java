@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+//for multiple instance of same microservice this is important
 @ProcessingGroup("user-service-group")
 public class UserEventHandler {
 

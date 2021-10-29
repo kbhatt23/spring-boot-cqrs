@@ -150,7 +150,7 @@ public class ProductAggregate {
 			throw new IllegalArgumentException("reserveProductCommand: quantity should be greater than zero");
 		}
 		
-		
+		//this is there to test saga rollback scenario
 		if(this.quantity < quantityToReserve) {
 			throw new IllegalArgumentException("reserveProductCommand: can not reserve more than in stock");
 		}

@@ -140,7 +140,7 @@ public class OrderSagaHandler {
 		commandGateway.send(successOrderCommand, (commandMessage , commandResultMessage) -> {
 			if(commandResultMessage.isExceptional()) {
 				//fall back undo command events
-				//credit back the money to user, also do previos 2 steps
+				//credit back the money to user, upstock te product and then reject the order state
 				
 				
 				  UserBalanceCreditCommand userBalanceCreditCommand = UserBalanceCreditCommand.builder()

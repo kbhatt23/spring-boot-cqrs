@@ -84,6 +84,7 @@ public class OrderAggregate {
 			throw new IllegalArgumentException(
 					"successOrderCommand: orderID can not be empty while finalizing order");
 		}
+		//can be used to validate saga rollback
 		if (StringUtils.isEmpty(successOrderCommand.getShipmentPreference())) {
 			throw new IllegalArgumentException(
 					"successOrderCommand: shipmentPreference can not be empty while finalizing order");

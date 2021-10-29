@@ -13,5 +13,6 @@ public class Product {
 	
 	private String descripion;
 	
+	//for stock
 	private int quantity;
 }

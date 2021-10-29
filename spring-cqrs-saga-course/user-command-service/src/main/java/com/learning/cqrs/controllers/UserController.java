@@ -35,6 +35,7 @@ public class UserController {
 					.balance(userDTO.getBalance())
 					.build();
 		userDTO.setUserId(userId);
+		//could have used callback bifunction of send method to check expcetion or success case on callback
 		try {
 			return commandGateway.send(createUserCommand)
 					.thenApply(

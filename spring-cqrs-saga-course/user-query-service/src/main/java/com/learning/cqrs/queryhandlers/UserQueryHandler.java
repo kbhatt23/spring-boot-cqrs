@@ -30,11 +30,15 @@ public class UserQueryHandler {
 
 	@QueryHandler
 	public CompletableFuture<UserDTO> on(FindUserByIDQuery findUserByIDQuery){
-		String userId = findUserByIDQuery.getUserID();
-		log.info("on: findUserByIDQuery called for id "+userId);
-		
-		return CompletableFuture.supplyAsync(() -> userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("userId "+userId+" do not exist in D.B")))
-				.thenApply(userEntity -> {UserDTO userDto = new UserDTO(); BeanUtils.copyProperties(userEntity, userDto); return userDto;});
+		return CompletableFuture.supplyAsync(() -> { 
+			String userId = findUserByIDQuery.getUserID();
+			log.info("on: findUserByIDQuery called for id "+userId);
+			return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("userId "+userId+" do not exist in D.B"));
+			})
+				.thenApply(userEntity -> {
+					UserDTO userDto = new UserDTO();
+					BeanUtils.copyProperties(userEntity, userDto); return userDto;
+					});
 				
 	}
 	

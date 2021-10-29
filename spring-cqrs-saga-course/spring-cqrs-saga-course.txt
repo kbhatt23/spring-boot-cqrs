@@ -56,3 +56,35 @@ deadline events are not stored in event source
 deadline manager type:
 a. simple deadline manager: stores deadline schedule in memory , so jvm shut downs we loose this schedule
 b. quartz deadline manager: stores deadline schedule in persistent D.B so used in production
+
+----susbscription----
+- quite similar to subscription in graphql, qhere client creates a connection and for every update on data a stream of event is pushed to clietn
+	once client cacnels subscription server will not send the updates 
+- very useful in cqrs apis as the command executes in command api and makes the read api eventual consistent as data will get updated a bit late
+		if before this update client asks query in query api then it will get stale data,
+		specially in saga since multiple apis are called to get updated data , it will get stale data untill all the saga is complete
+		in these case client can ask for subscription query instead of sinple query and as soon as data is recieved after all saga client will get the response
+		also until client cancels the subscription it keeps on getting newer updates on that aggregate object state change
+		
+		-- snapshoting
+		typically in cqrs application event store have all the events in it
+		anytime we want to update an aggregate for better consistency axon creates fresh aggregate object and updates it based on all the events present in event store
+		in case event store have less entries then not much performance issue occurs, but in case huge entries exist it can be performance bottleneck
+		
+		we can use snapshot to optimize performance, on every 4/n updates in event store we can have the final result in form of snapshot
+		so next time to rebuild the object during aggregate object we need not to run all the events one by one, but these intermediate snapshots will be ran whihc are less and hence optimize performance
+		
+		snapshot runs asynchronously and can be configured to run based on interval or based on every freequency of event update colunt in event store
+		
+		---replayable
+		in cqrs all the actions of state change of aggregate object remains persisted in event store
+		and all the business logic is created to update its state in query api, in case logic have some bug or we want to enahnce feature
+		
+		and for same aggregate we want to run the vent from begining to find the actual new state with new bug fix/new ehancement we can do using replayable feature
+		also it can help in debugging as we can replay based on specific state and here we can identity within which range of data issue existed and we can bug fix easily
+
+it can only be used for trasn processor
+steps:
+a. @ResetHandler method in event handler is called(ccan also be in command api) here we can clear existing d.b so that freshly with new business logic all events are executed
+b. another annotaion: using this we can skip specific methods, like email sending/notification as we are replaying to fix issues on our side and hence we do not want the method to execute during replay		
+		

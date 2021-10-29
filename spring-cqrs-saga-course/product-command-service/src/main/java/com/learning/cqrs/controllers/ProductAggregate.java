@@ -1,6 +1,7 @@
 package com.learning.cqrs.controllers;
 
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
@@ -22,7 +23,8 @@ import com.learning.cqrs.events.UpdateProductEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Aggregate
+@Aggregate(snapshotTriggerDefinition = "productSnapshotTriggerDefinition")
+@ProcessingGroup("product-service-group")
 public class ProductAggregate {
 
 	@AggregateIdentifier

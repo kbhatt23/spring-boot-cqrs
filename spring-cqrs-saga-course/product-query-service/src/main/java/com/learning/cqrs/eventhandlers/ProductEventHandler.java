@@ -2,6 +2,7 @@ package com.learning.cqrs.eventhandlers;
 
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.eventhandling.ResetHandler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,4 +91,12 @@ public class ProductEventHandler {
 							.orElseThrow(() ->  new IllegalArgumentException("undoReserveProductEvent: invalid productID passed "+productId))
 							;
 	}
+
+	//will be called when replay event is triggered only once at the begining as step1
+	@ResetHandler
+	public void reset() {
+		log.info("reset called");
+		productsRepository.deleteAll();
+	}
 }
+

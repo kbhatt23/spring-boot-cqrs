@@ -2,6 +2,7 @@ package com.learning.cqrs.queryhandlers;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@ProcessingGroup("product-service-group")
 public class ProductQueryHandler {
 	
 	@Autowired

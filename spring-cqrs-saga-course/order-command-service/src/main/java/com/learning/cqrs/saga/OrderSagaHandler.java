@@ -1,6 +1,10 @@
 package com.learning.cqrs.saga;
 
+import java.time.Duration;
+
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.deadline.DeadlineManager;
+import org.axonframework.deadline.annotation.DeadlineHandler;
 import org.axonframework.modelling.saga.EndSaga;
 import org.axonframework.modelling.saga.SagaEventHandler;
 import org.axonframework.modelling.saga.StartSaga;
@@ -35,6 +39,9 @@ public class OrderSagaHandler {
 	
 	@Autowired
 	private transient QueryGateway queryGateway;
+	
+	@Autowired
+	private transient DeadlineManager deadlineManager;
 	
 	@StartSaga
 	@SagaEventHandler(associationProperty = "orderId")
@@ -78,7 +85,19 @@ public class OrderSagaHandler {
 		  		.build()
 		  		;
 		  
-			commandGateway.send(userBalanceDebitCommand, (commandMessage , commandResultMessage) -> {
+		  //assume billing api is time consuming as it is overloaded and hence user debit should happen within time line
+		  //for this specific command i expect the succes event to be called within the duration of 1 seconds
+		  deadlineManager.schedule(Duration.ofSeconds(10),ReserveProductEvent.DEADLINE_NAME , reserveProductEvent );
+		  
+		  //we will assume below code is not executed to demo deadline
+		 // boolean deadlineExceeded = true;
+		  
+		  boolean deadlineExceeded = false;
+		  if(deadlineExceeded) {
+			  return;
+		  }
+		  
+		  commandGateway.send(userBalanceDebitCommand, (commandMessage , commandResultMessage) -> {
 				if(commandResultMessage.isExceptional()) {
 					//fall back undo command events
 					//upstock the product quantity and make order rejected
@@ -121,6 +140,8 @@ public class OrderSagaHandler {
 	@SagaEventHandler(associationProperty = "orderId")
 	public void handle(UserBalanceDebitEvent userBalanceDebitEvent) {
 		log.info("handle.userBalanceDebitEvent called with data: "+userBalanceDebitEvent);
+		
+		deadlineManager.cancelAll(ReserveProductEvent.DEADLINE_NAME );
 		
 		FindUserPreferenceByID findUserPreferenceByID = new FindUserPreferenceByID(userBalanceDebitEvent.getUserId());
 		
@@ -170,6 +191,17 @@ public class OrderSagaHandler {
 	public void handle(FailureOrderEvent failureOrderEvent) {
 		log.info("handle.failureOrderEvent error occurred while placing order: "+failureOrderEvent);
 		
+	}
+	
+	@DeadlineHandler(deadlineName = ReserveProductEvent.DEADLINE_NAME)
+	public void deadline(ReserveProductEvent reserveProductEvent) {
+			log.info("deadline reserveProductEvent called with data: "+reserveProductEvent);
+			
+			//so far product stock is closed so we need to updstock that
+			UndoReserveProductCommand undoReserveProductCommand = new UndoReserveProductCommand();
+			BeanUtils.copyProperties(reserveProductEvent, undoReserveProductCommand);
+			
+			commandGateway.send(undoReserveProductCommand);
 	}
 	
 }

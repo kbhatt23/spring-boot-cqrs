@@ -38,3 +38,21 @@ http request -> query contrller -> querygateway dispatch -> query bus(internal) 
     -> copletablefuture object is taken from query bus result
 	
 we can see at each level even within command and query api it is decoupled and even internal calls are async using internal bus	
+
+
+-- most effective concept is that the command gateway/ command bus + event bus / event gateway , query gateway / query bus are all shared among multiple services
+as these bus exist in the axon server and any microservice be it query/command or another service can take data from this bus using @commandhandler/ @evenhandler methods
+
+//for multiple instance of same microservice this is important to put in eventhandler in query api
+@ProcessingGroup("user-service-group")
+
+---deadlines
+deadline is an event that take place when there is absence of an event
+eg we created a command and it should be handled and an event is to be sent, but in case there is a timeout and wihtin taht duration an event is not recieved
+a deadline event can be triggerred
+very useful for sagas whihc have multiple steps meaning multple commands and events and there has to be a timeout and tracking for individual events
+can be used with saga or even wihout saga
+deadline events are not stored in event source
+deadline manager type:
+a. simple deadline manager: stores deadline schedule in memory , so jvm shut downs we loose this schedule
+b. quartz deadline manager: stores deadline schedule in persistent D.B so used in production

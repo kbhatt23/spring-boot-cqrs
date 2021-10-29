@@ -51,10 +51,10 @@ public class UserQueryHandler {
 			String preference =  PREFERENCES.get(preferenceIdnex);
 			
 			log.info("on: findUserPreferenceByID preference for user: "+userId + " is: "+preference);
-			//return preference;
+			return preference;
 			
 			//for demo returning null for testing saga at last stage
-			return null;
+			//return null;
 		});
 		
 	}

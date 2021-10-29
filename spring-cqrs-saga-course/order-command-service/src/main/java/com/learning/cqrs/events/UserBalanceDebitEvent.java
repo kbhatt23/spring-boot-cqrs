@@ -4,6 +4,8 @@ import lombok.Data;
 
 @Data
 public class UserBalanceDebitEvent {
+	
+	public static transient final String DEADLINE_NAME = "user-balance-debit-deadline";
 
 	private String userId;
 

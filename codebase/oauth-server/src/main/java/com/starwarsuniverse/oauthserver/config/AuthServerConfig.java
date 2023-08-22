@@ -1,4 +1,4 @@
-package com.learning.cqrs.oauth_server.config;
+package com.starwarsuniverse.oauthserver.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
                 .withClient(clientId)
                 .secret(new BCryptPasswordEncoder(12).encode(clientSecret))
                 .scopes("read", "write")
-                .authorizedGrantTypes("password", "refresh_token")
+                .authorizedGrantTypes("password", "refresh_token", "client_credentials")
                 .accessTokenValiditySeconds(tokenValidity)
                 .refreshTokenValiditySeconds(refreshTokenValidity);
     }

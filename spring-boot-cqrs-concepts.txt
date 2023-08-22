@@ -8,7 +8,7 @@ b. adding multiple point of failure so that thereis high resilience:
 c. we can keep implementation technique seperate for read and writes, eg we can keep acid compilat db for writes and have seperate table for consistent data
 	and for read we an havce single table and hence to make it fast we need not have join etc
 flow:
-	write service pusblish to inner event queue, using comandhandler
+	write service pusblish to inner/in memory event queue, using comandhandler
 	> the internal queu edata will be stored in event store eg: mysql d.B, mongo etc -> this way we cna even replay the data in case of errros
 	then this also publish to event bus whihc will be read by event handler in reqad api whihc create/modify the real record whihc wil be pulled by the client
 	- > any issue in read data can still be replayed from event store,

@@ -1,4 +1,4 @@
-package com.learning.cqrs.oauth_server.config;
+package com.starwarsuniverse.oauthserver.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.learning.cqrs.oauth_server.service.UserService;
+import com.starwarsuniverse.oauthserver.service.UserService;
 
 @Configuration
 @EnableWebSecurity

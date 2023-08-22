@@ -1,0 +1,50 @@
+version: '3.7'
+services:
+  axonserver:
+    image: axoniq/axonserver
+    restart: always    
+    hostname: axonserver
+    volumes:
+      - axonserver-data:/data
+      - axonserver-events:/eventdata
+      - axonserver-config:/config:ro
+    ports:
+      - '8024:8024'
+      - '8124:8124'
+      - '8224:8224'
+    networks:
+      - axon-network
+  mongodb:
+    image: mongo:3.6
+    restart: always    
+    hostname: mongodb
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - axon-network
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: jaishreeram 
+      MYSQL_USER: axon-user
+      MYSQL_PASSWORD: jaishreeram
+      MYSQL_DATABASE: axon-db
+    volumes:
+      - mysql-database-data-volume:/var/lib/mysql
+    networks:
+      - axon-network      
+
+volumes:
+  axonserver-data:
+  axonserver-events:
+  axonserver-config:
+  mongo-data:
+  mysql-database-data-volume:
+
+networks:
+  axon-network:

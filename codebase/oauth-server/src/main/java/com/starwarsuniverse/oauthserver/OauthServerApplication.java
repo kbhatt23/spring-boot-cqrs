@@ -1,4 +1,4 @@
-package com.learning.cqrs.oauth_server;
+package com.starwarsuniverse.oauthserver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

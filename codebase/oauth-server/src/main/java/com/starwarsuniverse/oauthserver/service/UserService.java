@@ -1,4 +1,4 @@
-package com.learning.cqrs.oauth_server.service;
+package com.starwarsuniverse.oauthserver.service;
 
 import java.util.Optional;
 
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.learning.cqrs.oauth_server.models.Account;
-import com.learning.cqrs.oauth_server.models.User;
-import com.learning.cqrs.oauth_server.repositories.UserRepository;
+import com.starwarsuniverse.oauthserver.models.Account;
+import com.starwarsuniverse.oauthserver.models.User;
+import com.starwarsuniverse.oauthserver.repositories.UserRepository;
 
 @Service(value = "userService")
 public class UserService implements UserDetailsService {
@@ -23,7 +23,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByEmail(username); //email and username are same 
 
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("Incorrect Username / Password supplied!");

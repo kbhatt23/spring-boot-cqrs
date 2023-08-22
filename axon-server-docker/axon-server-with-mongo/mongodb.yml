@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  mongodb:
+    image: mongo:3.6
+    restart: always    
+    hostname: mongodb
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - mongo-network      
+
+volumes:
+  mongo-data:
+
+networks:
+  mongo-network:
